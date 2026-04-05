@@ -1,0 +1,29 @@
+{
+  "name": "rversed-api",
+  "version": "0.1.0",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "nodemon --watch src --exec node src/index.js",
+    "start": "node src/index.js",
+    "test": "jest",
+    "test:e2e": "node tests/e2e.test.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "express-rate-limit": "^8.2.1",
+    "express-validator": "^7.0.1",
+    "jest": "^30.2.0",
+    "node-fetch": "^2.6.7",
+    "pg": "^8.13.0",
+    "plaid": "^41.1.0",
+    "stripe": "^20.3.1",
+    "supertest": "^7.2.2",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}

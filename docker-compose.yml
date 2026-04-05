@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: rversed
+      POSTGRES_USER: rversed
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-dev_password}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  rversed-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT_API: 4000
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+      PLAID_CLIENT_ID: ${PLAID_CLIENT_ID}
+      PLAID_SECRET: ${PLAID_SECRET}
+      ADYEN_API_KEY: ${ADYEN_API_KEY}
+      DATABASE_URL: postgres://rversed:${DB_PASSWORD:-dev_password}@postgres:5432/rversed
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      - postgres
+      - redis
+    command: npm run start:api
+
+  rversed-web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      VITE_API_URL: http://rversed-api:4000
+    depends_on:
+      - rversed-api
+    command: npm run dev
+
+volumes:
+  postgres_data:

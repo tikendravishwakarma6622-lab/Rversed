@@ -1,0 +1,14 @@
+{
+  "name": "rversed",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "start:api": "cd apps/api && npm run dev",
+    "start:web": "cd apps/web && npm run dev"
+  },
+  "dependencies": {
+    "express-validator": "^7.3.2"
+  }
+}
