@@ -205,23 +205,23 @@ export default function Landing() {
               <ul className="space-y-2 text-sm text-gray-400">
                 <li><a href="#features" className="hover:text-white transition-colors">Features</a></li>
                 <li><a href="#pricing" className="hover:text-white transition-colors">Pricing</a></li>
-                <li><span className="text-gray-600">API Docs (coming soon)</span></li>
+                <li><Link to="/register" className="hover:text-white transition-colors">API Access</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="text-sm font-semibold text-white mb-4">Company</h4>
               <ul className="space-y-2 text-sm text-gray-400">
-                <li><span className="text-gray-600">About</span></li>
-                <li><span className="text-gray-600">Blog</span></li>
-                <li><span className="text-gray-600">Careers</span></li>
+                <li><a href="mailto:support@rversed.app" className="hover:text-white transition-colors">Contact</a></li>
+                <li><a href="https://github.com/tikendravishwakarma6622-lab/Rversed" className="hover:text-white transition-colors" target="_blank" rel="noreferrer">GitHub</a></li>
+                <li><Link to="/register" className="hover:text-white transition-colors">Careers</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="text-sm font-semibold text-white mb-4">Legal</h4>
               <ul className="space-y-2 text-sm text-gray-400">
-                <li><span className="text-gray-600">Privacy Policy</span></li>
-                <li><span className="text-gray-600">Terms of Service</span></li>
-                <li><span className="text-gray-600">Compliance</span></li>
+                <li><a href="mailto:legal@rversed.app" className="hover:text-white transition-colors">Privacy Policy</a></li>
+                <li><a href="mailto:legal@rversed.app" className="hover:text-white transition-colors">Terms of Service</a></li>
+                <li><a href="mailto:legal@rversed.app" className="hover:text-white transition-colors">Compliance</a></li>
               </ul>
             </div>
           </div>

@@ -55,24 +55,39 @@ async function handleStripeWebhook(event) {
     case 'charge.dispute.created': {
       const chargeId = data.object.charge;
       logEvent('fraud_alert', { chargeId, reason: data.object.reason });
-      // TODO: notify fraud team, flag user for review
+      // Flag related transaction for review
+      const flaggedTx = (db.transactions || []).find(t => t.providerId === chargeId);
+      if (flaggedTx) {
+        db.updateTransaction(flaggedTx.id, {
+          status: 'disputed',
+          fraudFlags: [{ type: 'dispute', reason: data.object.reason, timestamp: new Date().toISOString() }],
+          requiresManualReview: true,
+        });
+        // Flag the user account
+        const flaggedUser = db.findUserById(flaggedTx.userId);
+        if (flaggedUser) {
+          db.updateUser(flaggedUser.id, { flaggedForReview: true, flagReason: `Dispute: ${data.object.reason}` });
+        }
+      }
       break;
     }
 
     case 'payout.paid': {
       const payoutId = data.object.id;
-      const withdrawals = (db.withdrawals || []).filter(w => w.providerId === payoutId);
-      withdrawals.forEach(w => {
-        db.updateWithdrawal(w.id, { status: 'completed' });
+      const matched = (db.withdrawals || []).filter(w => w.providerId === payoutId);
+      matched.forEach(w => {
+        const wd = db.withdrawals.find(x => x.id === w.id);
+        if (wd) Object.assign(wd, { status: 'completed', updatedAt: new Date().toISOString() });
       });
       break;
     }
 
     case 'payout.failed': {
       const payoutId = data.object.id;
-      const withdrawals = (db.withdrawals || []).filter(w => w.providerId === payoutId);
-      withdrawals.forEach(w => {
-        db.updateWithdrawal(w.id, { status: 'failed', errorMessage: data.object.failure_message });
+      const matched = (db.withdrawals || []).filter(w => w.providerId === payoutId);
+      matched.forEach(w => {
+        const wd = db.withdrawals.find(x => x.id === w.id);
+        if (wd) Object.assign(wd, { status: 'failed', errorMessage: data.object.failure_message, updatedAt: new Date().toISOString() });
       });
       break;
     }
@@ -108,13 +123,29 @@ async function handleAdyenWebhook(event) {
   const { eventCode, data } = event;
   logEvent(`adyen.${eventCode}`, data);
 
-  // Similar to Stripe handlers
   switch (eventCode) {
-    case 'AUTHORISATION':
-      if (data.success === 'true') {
-        // Mark transaction as succeeded
+    case 'AUTHORISATION': {
+      const pspRef = data.pspReference;
+      const success = data.success === 'true';
+      const tx = (db.transactions || []).find(t => t.providerId === pspRef);
+      if (tx) {
+        db.updateTransaction(tx.id, {
+          status: success ? 'completed' : 'failed',
+          providerStatus: success ? 'succeeded' : 'failed',
+          errorMessage: success ? undefined : (data.reason || 'Payment declined'),
+        });
       }
       break;
+    }
+    case 'CANCELLATION':
+    case 'REFUND': {
+      const pspRef = data.pspReference;
+      const tx = (db.transactions || []).find(t => t.providerId === pspRef);
+      if (tx) {
+        db.updateTransaction(tx.id, { status: 'refunded' });
+      }
+      break;
+    }
     default:
       break;
   }

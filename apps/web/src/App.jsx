@@ -12,6 +12,7 @@ import Invoices from './pages/Invoices';
 import Admin from './pages/Admin';
 import Verification from './pages/Verification';
 import Navbar from './components/Navbar';
+import AIChat from './components/AIChat';
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuth();
@@ -29,6 +30,7 @@ export default function App() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 transition-colors">
       {user && <Navbar />}
+      {user && <AIChat user={user} />}
       <Routes>
         <Route path="/" element={user ? <Navigate to="/dashboard" /> : <Landing />} />
         <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <Login />} />

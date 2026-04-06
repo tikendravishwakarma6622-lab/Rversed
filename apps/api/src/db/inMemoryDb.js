@@ -29,6 +29,8 @@ const transactions = [];
 
 const withdrawals = [];
 
+const invoices = [];
+
 const eventLog = [];
 
 function createUser(data) {
@@ -105,9 +107,52 @@ function getUserTransactions(userId) {
   return transactions.filter(t => t.userId === userId).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 }
 
+// --- Invoice CRUD ---
+function getUserInvoices(userId) {
+  return invoices.filter(i => i.userId === userId).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+}
+
+function getInvoiceById(id) {
+  return invoices.find(i => i.id === id) || null;
+}
+
+function createInvoice(data) {
+  const inv = Object.assign({ id: uuidv4(), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }, data);
+  invoices.push(inv);
+  return inv;
+}
+
+function updateInvoice(id, patch) {
+  const inv = invoices.find(i => i.id === id);
+  if (!inv) return null;
+  Object.assign(inv, patch, { updatedAt: new Date().toISOString() });
+  return inv;
+}
+
+function deleteInvoice(id) {
+  const idx = invoices.findIndex(i => i.id === id);
+  if (idx === -1) return false;
+  invoices.splice(idx, 1);
+  return true;
+}
+
+// --- Withdrawal helpers ---
+function updateWithdrawal(id, patch) {
+  const w = withdrawals.find(x => x.id === id);
+  if (!w) return null;
+  Object.assign(w, patch, { updatedAt: new Date().toISOString() });
+  return w;
+}
+
+function findWithdrawalByIdempotencyKey(key) {
+  return withdrawals.find(w => w.idempotencyKey === key) || null;
+}
+
 module.exports = {
-  users, sessions, transactions, withdrawals, eventLog,
+  users, sessions, transactions, withdrawals, invoices, eventLog,
   createUser, findUserByEmail, findUserById, updateUser,
   createSession, getSession, deleteSession,
   createTransaction, findTransactionByIdempotencyKey, updateTransaction, sumUserTransactionsSince, getUserTransactions,
+  getUserInvoices, getInvoiceById, createInvoice, updateInvoice, deleteInvoice,
+  updateWithdrawal, findWithdrawalByIdempotencyKey,
 };

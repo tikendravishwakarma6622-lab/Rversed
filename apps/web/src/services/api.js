@@ -51,4 +51,21 @@ export default {
   // Email verification
   sendVerificationEmail: () => request('/api/auth/send-verification', { method: 'POST' }),
   verifyEmail: (code) => request('/api/auth/verify-email', { method: 'POST', body: JSON.stringify({ code }) }),
+
+  // Plaid
+  createPlaidLinkToken: () => request('/api/integrations/plaid-link-token', { method: 'POST' }),
+  exchangePlaidToken: (publicToken) => request('/api/integrations/plaid-exchange-token', { method: 'POST', body: JSON.stringify({ publicToken }) }),
+
+  // AI
+  aiChat: (message, context = {}) => request('/api/ai/chat', { method: 'POST', body: JSON.stringify({ message, context }) }),
+  aiRecommendMethod: (amountCents) => request('/api/ai/recommend-method', { method: 'POST', body: JSON.stringify({ amountCents }) }),
+  aiAnalyzeFraud: (fraudAnalysis, transaction) => request('/api/ai/analyze-fraud', { method: 'POST', body: JSON.stringify({ fraudAnalysis, transaction }) }),
+
+  // Admin
+  getAdminStats: () => request('/api/admin/stats'),
+  getAdminUsers: (params = '') => request(`/api/admin/users${params ? '?' + params : ''}`),
+  getAdminTransactions: (params = '') => request(`/api/admin/transactions${params ? '?' + params : ''}`),
+
+  // Invoice pay
+  payInvoice: (id) => request(`/api/invoices/${id}/pay`, { method: 'POST' }),
 };

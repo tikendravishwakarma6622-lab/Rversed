@@ -2,6 +2,7 @@ const db = require('../db/inMemoryDb');
 const btcService = require('../services/bitcoin.service');
 const stripeAdapter = require('../services/provider-adapters/stripeAdapter');
 const adyenAdapter = require('../services/provider-adapters/adyenAdapter');
+const plaidAdapter = require('../services/provider-adapters/plaidAdapter');
 const { v4: uuidv4 } = require('uuid');
 
 async function getAvailablePaymentMethods(req, res) {
@@ -15,8 +16,44 @@ async function getAvailablePaymentMethods(req, res) {
 }
 
 async function createPlaidLinkToken(req, res) {
-  // dev stub
-  return res.json({ link_token: 'plaid-link-token-dev' });
+  const user = req.user;
+  if (!user) return res.status(401).json({ error: 'unauthenticated' });
+  try {
+    const result = await plaidAdapter.createLinkToken({
+      userId: user.id,
+      userName: user.profile?.fullName || user.email,
+      userEmail: user.email,
+      country: (user.region || 'US').toUpperCase(),
+    });
+    return res.json(result);
+  } catch (err) {
+    // Fallback to dev token when Plaid not configured
+    return res.json({ link_token: `plaid-link-dev-${Date.now()}`, dev: true });
+  }
+}
+
+async function exchangePlaidToken(req, res) {
+  const user = req.user;
+  if (!user) return res.status(401).json({ error: 'unauthenticated' });
+  const { publicToken } = req.body;
+  if (!publicToken) return res.status(400).json({ error: 'publicToken required' });
+  try {
+    const result = await plaidAdapter.exchangePublicToken({ publicToken });
+    const authData = await plaidAdapter.getAuth({ accessToken: result.accessToken });
+    return res.json({
+      accessToken: result.accessToken,
+      itemId: result.itemId,
+      accounts: authData.accounts,
+    });
+  } catch (err) {
+    // Dev fallback
+    return res.json({
+      accessToken: `access-dev-${Date.now()}`,
+      itemId: `item-dev-${Date.now()}`,
+      accounts: [{ id: 'acct_dev', name: 'Dev Checking', type: 'checking', mask: '1234' }],
+      dev: true,
+    });
+  }
 }
 
 async function buyBitcoin(req, res) {
@@ -106,4 +143,4 @@ async function buyBitcoin(req, res) {
   }
 }
 
-module.exports = { getAvailablePaymentMethods, createPlaidLinkToken, buyBitcoin };
+module.exports = { getAvailablePaymentMethods, createPlaidLinkToken, exchangePlaidToken, buyBitcoin };

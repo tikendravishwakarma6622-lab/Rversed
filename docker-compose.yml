@@ -31,6 +31,12 @@ services:
       PLAID_CLIENT_ID: ${PLAID_CLIENT_ID}
       PLAID_SECRET: ${PLAID_SECRET}
       ADYEN_API_KEY: ${ADYEN_API_KEY}
+      ADYEN_MERCHANT_ACCOUNT: ${ADYEN_MERCHANT_ACCOUNT}
+      ADYEN_ENDPOINT: ${ADYEN_ENDPOINT}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      PLAID_WEBHOOK: ${PLAID_WEBHOOK}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
+      DAILY_BUY_LIMIT_CENTS: ${DAILY_BUY_LIMIT_CENTS:-2000000}
       DATABASE_URL: postgres://rversed:${DB_PASSWORD:-dev_password}@postgres:5432/rversed
       REDIS_URL: redis://redis:6379
     depends_on:

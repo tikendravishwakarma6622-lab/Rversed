@@ -8,6 +8,7 @@ const profileRouter = require('./routes/profile');
 const invoicesRouter = require('./routes/invoices');
 const kycRouter = require('./routes/kyc');
 const emailVerificationRouter = require('./routes/emailVerification');
+const aiRouter = require('./routes/ai');
 const withdrawalController = require('./controllers/withdrawalController');
 const adminController = require('./controllers/adminController');
 const { ipLimiter, userBuyLimiter, requireStrictKYC } = require('./middlewares/securityMiddleware');
@@ -57,12 +58,18 @@ app.use('/api/profile', profileRouter);
 app.use('/api/integrations', integrationsRouter);
 app.use('/api/invoices', invoicesRouter);
 app.use('/api/kyc', kycRouter);
+app.use('/api/ai', aiRouter);
 app.use('/webhooks', webhooksRouter);
 app.post('/api/withdrawals', withdrawalController.createWithdrawal);
 app.get('/api/withdrawals', withdrawalController.getUserWithdrawals);
-app.get('/api/admin/transactions', adminController.getTransactions);
-app.get('/api/admin/users', adminController.getUsers);
-app.get('/api/admin/stats', adminController.getDashboardStats);
+// Admin routes — require authenticated user (admin check can be added when roles are implemented)
+function requireAuth(req, res, next) {
+  if (!req.user) return res.status(401).json({ error: { type: 'authentication_error', message: 'Not authenticated' } });
+  next();
+}
+app.get('/api/admin/transactions', requireAuth, adminController.getTransactions);
+app.get('/api/admin/users', requireAuth, adminController.getUsers);
+app.get('/api/admin/stats', requireAuth, adminController.getDashboardStats);
 
 // Health check
 app.get('/health', (req, res) => res.json({ ok: true, version: '1.0.0' }));

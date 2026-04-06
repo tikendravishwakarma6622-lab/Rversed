@@ -17,6 +17,12 @@ services:
         sync: false
       - key: STRIPE_WEBHOOK_SECRET
         sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: PLAID_CLIENT_ID
+        sync: false
+      - key: PLAID_SECRET
+        sync: false
       - key: FRONTEND_URL
         value: https://rversed.com
     healthCheckPath: /health
