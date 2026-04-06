@@ -115,12 +115,12 @@ export default function Landing() {
             <p className="mt-4 text-lg text-gray-500 dark:text-gray-400">Payments, banking, accounting, and AI — unified in one platform.</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <FeatureCard icon="&#36;" title="Accept Payments" desc="Cards, ACH, bank transfers, and crypto. One API, every payment method. Global coverage in 150+ countries." />
-            <FeatureCard icon="&#9993;" title="Send Invoices" desc="Create professional invoices in seconds. Automatic reminders, payment links, and real-time tracking." />
-            <FeatureCard icon="&#127974;" title="Business Banking" desc="FDIC-insured accounts, virtual cards, and instant payouts. Your money, always accessible." />
-            <FeatureCard icon="&#128200;" title="Real-time Analytics" desc="Live dashboards with revenue metrics, customer insights, and cash flow forecasting powered by AI." />
-            <FeatureCard icon="&#129302;" title="AI Assistant (xez)" desc="Get instant help with payments, fraud alerts, financial advice, and business optimization." />
-            <FeatureCard icon="&#128737;" title="Fraud Protection" desc="ML-powered fraud detection with adaptive risk scoring. Block threats before they cost you." />
+            <FeatureCard icon="&#36;" title="Accept Payments" desc="Buy and sell Bitcoin with card or bank transfer. Stripe-powered checkout with real-time conversion rates and instant confirmations." />
+            <FeatureCard icon="&#9993;" title="Send Invoices" desc="Create, send, and track professional invoices with line items, tax calculation, and one-click payment. Manage your entire billing workflow." />
+            <FeatureCard icon="&#128100;" title="KYC Verification" desc="3-step identity verification powered by Stripe Identity. Email confirmation, government ID check, and address validation — all built in." />
+            <FeatureCard icon="&#128200;" title="Dashboard & Analytics" desc="Real-time dashboard with balance tracking, transaction history, spending metrics, and account status — all at a glance." />
+            <FeatureCard icon="&#128119;" title="Admin Panel" desc="Full admin console with user management, transaction monitoring, withdrawal oversight, and platform-wide analytics." />
+            <FeatureCard icon="&#128737;" title="Fraud Protection" desc="Adaptive risk scoring engine that evaluates every transaction in real time. Automatic blocking of suspicious activity before it costs you." />
           </div>
         </div>
       </section>

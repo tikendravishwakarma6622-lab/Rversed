@@ -20,6 +20,7 @@ export default function Navbar() {
     { to: '/payments', label: 'Payments' },
     { to: '/invoices', label: 'Invoices' },
     { to: '/transactions', label: 'Transactions' },
+    { to: '/verification', label: 'Verification' },
     { to: '/admin', label: 'Admin' },
   ];
 

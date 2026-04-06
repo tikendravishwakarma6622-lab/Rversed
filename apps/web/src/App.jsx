@@ -10,6 +10,7 @@ import Payments from './pages/Payments';
 import Transactions from './pages/Transactions';
 import Invoices from './pages/Invoices';
 import Admin from './pages/Admin';
+import Verification from './pages/Verification';
 import Navbar from './components/Navbar';
 
 function PrivateRoute({ children }) {
@@ -37,6 +38,7 @@ export default function App() {
         <Route path="/payments" element={<PrivateRoute><Payments /></PrivateRoute>} />
         <Route path="/transactions" element={<PrivateRoute><Transactions /></PrivateRoute>} />
         <Route path="/invoices" element={<PrivateRoute><Invoices /></PrivateRoute>} />
+        <Route path="/verification" element={<PrivateRoute><Verification /></PrivateRoute>} />
         <Route path="/admin" element={<PrivateRoute><Admin /></PrivateRoute>} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
